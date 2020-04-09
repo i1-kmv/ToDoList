@@ -5,9 +5,7 @@ import TodoListTasks from "./TodoListTasks";
 import TodoListFooter from "./TodoListFooter";
 
 class App extends React.Component {
-
-
-
+    
     state = {
         tasks: [
             {title: "CSS", isDone: true, priority: "low"},
@@ -22,7 +20,7 @@ class App extends React.Component {
 
 
     changeFilter = (newFilterValue) => {
-        this.setState ({
+        this.setState({
             filterValue: newFilterValue
         });
     }
@@ -41,35 +39,40 @@ class App extends React.Component {
     }
 
     changeStatus = (status, task) => {
-        alert(status)
+        let tasksCopy = this.state.tasks.map(t => {
+            if (t === task) {
+                return {...t, isDone: status};
+            }
+            return t;
+        });
+        this.setState({
+            tasks: tasksCopy
+        });
+
     }
 
 
     render = () => {
         return <div className="App">
             <div className="todoList">
-                <TodoListHeader addTask = {this.addTask} />
-
-                {/*<div className="todoList-header">
-                    <h3 className="todoList-header__title">What to Learn</h3>
-                    <div className="todoList-newTaskForm">
-                        <input ref={this.newTaskTitleRef} type="text" placeholder="New task name"/>
-                        <button onClick={this.OnAddTaskClick}> Add</button>
-                    </div>
-                </div>*/}
-
+                <TodoListHeader addTask={this.addTask}/>
                 <TodoListTasks
                     changeStatus={this.changeStatus}
                     tasks={this.state.tasks.filter(t => {
-                    switch (this.state.filterValue) {
-                        case "All":   return true;
-                        case "Completed": return t.isDone;
-                        case "Active": return !t.isDone;
-                         default:  return true;
-                    };
-                })}/>
+                        switch (this.state.filterValue) {
+                            case "All":
+                                return true;
+                            case "Completed":
+                                return t.isDone;
+                            case "Active":
+                                return !t.isDone;
+                            default:
+                                return true;
+                        }
+                        ;
+                    })}/>
 
-                <TodoListFooter changeFilter = {this.changeFilter} filterValue={this.state.filterValue}/>
+                <TodoListFooter changeFilter={this.changeFilter} filterValue={this.state.filterValue}/>
             </div>
         </div>
 

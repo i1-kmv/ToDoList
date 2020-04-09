@@ -6,15 +6,18 @@ class TodoListTask extends React.Component {
 
     onIsDoneChanged = (e) => {
 
-        this.props.changeStatus(e.currentTarget.checked);
+        this.props.changeStatus(e.currentTarget.checked, this.props.task);
     };
 
     render = () => {
+
+        const taskClassName = this.props.task.isDone ? "todoList-task done" : "todoList-task"
+
         return (
 
-                <div className="todoList-task">
-                    <input type="checkbox" checked={this.props.isDone} onChange={this.onIsDoneChanged}/>
-                    <span>{this.props.title}- priority:{this.props.priority}</span>
+                <div className={taskClassName}>
+                    <input type="checkbox" checked={this.props.task.isDone} onChange={this.onIsDoneChanged}/>
+                    <span>{this.props.task.title}, priority:{this.props.task.priority}</span>
                 </div>
 
         );
