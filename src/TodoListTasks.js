@@ -9,6 +9,7 @@ class TodoListTasks extends React.Component {
                 <TodoListTask
                     task={task}
                     changeStatus={this.props.changeStatus}
+                    changeTitle={this.props.changeTitle}
                 />
             )
         });
