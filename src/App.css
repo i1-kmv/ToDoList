@@ -1,5 +1,7 @@
 .App {
-
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
 }
 
 .error {
@@ -25,4 +27,17 @@
 
 .filter-active {
   background-color: #9ff3ff;
+}
+.todoList {
+  max-width: 300px;
+  border: 2px solid #9ff3ff;
+  margin-bottom: 20px;
+  margin-right: 20px;
+
+}
+
+
+
+.newItemForm {
+  margin-bottom: 20px;
 }

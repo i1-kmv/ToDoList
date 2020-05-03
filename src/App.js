@@ -1,126 +1,83 @@
 import React from 'react';
 import './App.css';
-import TodoListHeader from "./TodoListHeader";
-import TodoListTasks from "./TodoListTasks";
-import TodoListFooter from "./TodoListFooter";
+import TodoList from "./TodoList";
+import AddNewItemForm from "./AddNewItemForm";
+import {connect} from "react-redux";
+
 
 class App extends React.Component {
 
 
-    state = {
-        tasks: [],
-        filterValue: "All"
-    };
+    nextTodoListId = 0;
 
-    componentDidMount = () => {
-        this.restoreState()
-    }
+    addTodoList = (title) => {
+        this.props.addTodoList(title);
 
-    saveState = () => {
-        let stateAsString = JSON.stringify(this.state)
-
-        localStorage.setItem("state", stateAsString);
-    }
-
-    restoreState = () => {
-        let stateAsString = localStorage.getItem("state")
-        if (stateAsString) {
-            let state = JSON.parse(stateAsString)
-            state.tasks.forEach(t=>{
-              if  (t.id>=this.nextTaskId) {
-                  this.nextTaskId = t.id + 1;
-              }
-            });
-            this.setState(state);
-        }
     }
 
 
-    nextTaskId = 0;
+    render = (tl) => {
 
-    addTask = (newText) => {
+        let todoLists = this.props.todoLists.map(tl => <TodoList id={tl.id}
+                                                                 title={tl.title}
+                                                                 tasks={tl.tasks}
+                                                                 addTask={this.props.addTask}
+                                                                 changeTask={this.props.changeTask}
+        />)
 
-        let newTask = {
-            title: newText,
-            isDone: false,
-            priority: 'low',
-            id: this.nextTaskId
-        };
-        this.nextTaskId++;
-        let newTasks = [...this.state.tasks, newTask];
-        this.setState({
-            tasks: newTasks
-        }, () => {
-            this.saveState();
-        });
-    }
-
-        changeFilter = (newFilterValue) => {
-            this.setState({
-                filterValue: newFilterValue
-            });
-        }
-
-        changeTask = (taskId, obj) => {
-            let tasksCopy = this.state.tasks.map(t => {
-                if (t.id === taskId) {
-                    /* return {...t, isDone: status};*/
-                    return {...t, ...obj};
-                }
-                return t;
-            });
-            this.setState({
-                tasks: tasksCopy
-            });
-
-        }
-
-        changeStatus = (status, taskId) => {
-            let obj = {
-                isDone: status
-            }
-            this.changeTask(taskId, obj)
-
-        }
-
-        changeTitle = (title, taskId) => {
-            let obj = {
-                title: title
-            }
-            this.changeTask(taskId, obj)
-        }
-
-
-        render = () => {
-            return <div className="App">
-                <div className="todoList">
-                    <TodoListHeader addTask={this.addTask}/>
-                    <TodoListTasks
-                        changeStatus={this.changeStatus}
-                        changeTitle={this.changeTitle}
-                        tasks={this.state.tasks.filter(t => {
-                            switch (this.state.filterValue) {
-                                case "All":
-                                    return true;
-                                case "Completed":
-                                    return t.isDone;
-                                case "Active":
-                                    return !t.isDone;
-                                default:
-                                    return true;
-                            }
-                            ;
-                        })}/>
-
-                    <TodoListFooter changeFilter={this.changeFilter} filterValue={this.state.filterValue}/>
+        return (
+            <>
+                <div>
+                    <AddNewItemForm addItem={this.addTodoList}/>
                 </div>
-            </div>
+                <div className="App">
+                    {todoLists}
+                </div>
+            </>
+        )
+    };
+}
 
-        };
+
+const mapStateToProps = (state) => {
+    return {
+        todoLists: state.todoLists
+    }
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        addTodoList: (title) => {
+            const action = {
+                type: "ADD-TODOLIST",
+                title: title
+            };
+
+            dispatch(action)
+        },
+        addTask: (newTitle,todoListId) => {
+            const action = {
+                type: "ADD-TASK",
+                newText: newTitle,
+                newTodoListId: todoListId
+            };
+
+            dispatch(action)
+        },
+        changeTask: (taskId,obj) => {
+            const action = {
+                type: "CHANGE-TASK",
+                taskId: taskId,
+                delta: obj
+            };
+
+            dispatch(action)
+        },
+        }
     }
 
 
-    export
-    default
-    App;
+const ConnectedApp = connect(mapStateToProps, mapDispatchToProps)(App);
+
+export default ConnectedApp;
 
