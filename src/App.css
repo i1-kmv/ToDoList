@@ -1,6 +1,6 @@
 .App {
   display: flex;
-  flex-direction: row;
+  justify-content: flex-start;
   flex-wrap: wrap;
 }
 
@@ -13,8 +13,8 @@
 }
 
 .todoList {
-  width: 500px;
-  margin: 0 auto;
+ width: 700px;
+ margin: 20px;
 }
 
 .todoList > div {
